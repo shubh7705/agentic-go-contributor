@@ -320,9 +320,9 @@ agentic-go-contributor/
 
 ---
 
-##Output
+## Output
 ![output1](image.png)
-![output2](image copy.png)
+![output2](image_copy.png)
 
 ## License
 
