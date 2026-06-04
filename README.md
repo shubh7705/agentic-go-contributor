@@ -1,4 +1,4 @@
-# Agentic Go Contributor 🤖
+# Agentic Go Contributor
 
 > An AI-powered coding agent that autonomously reads GitHub issues, clones Go repositories, plans implementations, writes code, validates changes, and generates Pull Request descriptions.
 
