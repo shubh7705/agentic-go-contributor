@@ -1,0 +1,527 @@
+# MASTER PROMPT: Build an Agentic AI Contributor for Open-Source Go Projects
+
+You are a Staff AI Engineer and Principal Software Architect.
+
+Your task is to build a complete production-quality Agentic AI system that can solve GitHub issues in open-source Go repositories.
+
+The system must be designed specifically for the following repositories:
+
+* gin-gonic/gin
+* spf13/cobra
+* go-playground/validator
+* golangci/golangci-lint
+
+The objective is to create an AI coding agent that can:
+
+1. Read a GitHub issue
+2. Clone and inspect the repository
+3. Understand repository structure
+4. Retrieve relevant files
+5. Create an implementation plan
+6. Modify source code
+7. Add or modify tests
+8. Run validation
+9. Repair failures when possible
+10. Generate a Pull Request title and body
+
+The result should be a complete GitHub-ready project.
+
+---
+
+# Architecture
+
+Implement using LangGraph.
+
+Workflow:
+
+Issue
+↓
+Issue Agent
+↓
+Repository Agent
+↓
+Retriever Agent
+↓
+Planner Agent
+↓
+Code Agent
+↓
+Validation Agent
+↓
+Repair Agent (optional loop)
+↓
+PR Agent
+↓
+Final Output
+
+---
+
+# Tech Stack
+
+Language:
+Python 3.12+
+
+Agent Framework:
+LangGraph
+
+LLM:
+Kimi 2.6 via OpenRouter
+
+Use OpenAI-compatible API interface.
+
+Environment variable:
+
+OPENROUTER_API_KEY
+
+Model:
+
+moonshotai/kimi-k2-0905
+
+Create a dedicated llm.py wrapper.
+
+---
+
+# Repository Understanding
+
+Use Tree-Sitter Go.
+
+Requirements:
+
+* Parse repository structure
+* Parse packages
+* Parse functions
+* Parse methods
+* Parse interfaces
+* Parse structs
+
+Build a repository map.
+
+Example:
+
+{
+"binding/json.go": {
+"package": "binding",
+"functions": [
+"decodeJSON",
+"validate"
+]
+}
+}
+
+Store metadata for retrieval.
+
+---
+
+# Search Layer
+
+Use Ripgrep.
+
+Requirements:
+
+* Fast symbol search
+* Function search
+* String search
+* Type search
+
+Implement:
+
+tools/search.py
+
+Functions:
+
+search_symbol()
+search_text()
+search_package()
+
+All retrieval must use ripgrep.
+
+---
+
+# Embedding Retrieval
+
+Implement semantic search.
+
+Pipeline:
+
+Issue
+↓
+Sentence Transformer
+↓
+Embedding
+↓
+Vector Search
+↓
+Relevant Files
+
+Use:
+
+sentence-transformers/all-MiniLM-L6-v2
+
+Store vectors locally.
+
+Use FAISS.
+
+Implement:
+
+services/vector_store.py
+
+Requirements:
+
+* Chunk source files
+* Generate embeddings
+* Build vector index
+* Retrieve top-k chunks
+
+Hybrid Retrieval:
+
+score =
+0.6 * embedding_score +
+0.4 * rg_score
+
+Return ranked files.
+
+---
+
+# Agent Design
+
+Use LangGraph StateGraph.
+
+State Object:
+
+```python
+class AgentState(TypedDict):
+    issue_url: str
+    issue_title: str
+    issue_body: str
+
+    repo_path: str
+
+    repository_map: dict
+
+    retrieved_files: list
+
+    implementation_plan: str
+
+    proposed_changes: dict
+
+    test_results: str
+
+    lint_results: str
+
+    validation_passed: bool
+
+    pr_title: str
+
+    pr_body: str
+
+    logs: list[str]
+```
+
+---
+
+# Agent 1: Issue Agent
+
+Responsibilities:
+
+* Read GitHub issue
+* Extract title
+* Extract body
+* Extract acceptance criteria
+
+Output:
+
+Structured issue summary.
+
+---
+
+# Agent 2: Repository Agent
+
+Responsibilities:
+
+* Clone repository
+* Build repository map
+* Parse Go code with Tree-Sitter
+* Identify packages
+* Identify dependencies
+
+Output:
+
+Repository context.
+
+---
+
+# Agent 3: Retriever Agent
+
+Responsibilities:
+
+* Hybrid retrieval
+
+Use:
+
+1. Ripgrep
+2. Embeddings
+
+Input:
+
+Issue
+
+Output:
+
+Top relevant files
+
+Top relevant code chunks
+
+Reasoning for selection
+
+---
+
+# Agent 4: Planner Agent
+
+Responsibilities:
+
+Analyze:
+
+Issue
+Repository Context
+Relevant Files
+
+Produce:
+
+Implementation Plan
+
+Format:
+
+1. Root Cause
+2. Files to Modify
+3. Tests to Update
+4. Risks
+5. Validation Strategy
+
+Do not write code.
+
+Only planning.
+
+---
+
+# Agent 5: Code Agent
+
+Responsibilities:
+
+Generate code changes.
+
+Requirements:
+
+* Follow repository conventions
+* Preserve style
+* Produce minimal diffs
+* Modify only relevant files
+
+Output:
+
+Unified diff
+
+and
+
+modified file contents.
+
+---
+
+# Agent 6: Validation Agent
+
+Run:
+
+go test ./...
+
+If available:
+
+golangci-lint run
+
+Capture:
+
+stdout
+stderr
+exit codes
+
+Store in state.
+
+---
+
+# Agent 7: Repair Agent
+
+If validation fails:
+
+Input:
+
+Implementation Plan
+Diff
+Errors
+
+Generate corrected patch.
+
+Maximum:
+
+3 repair iterations.
+
+Workflow:
+
+Code Agent
+→ Validation
+→ Repair
+→ Validation
+
+Stop when:
+
+tests pass
+
+or
+
+max retries reached
+
+---
+
+# Agent 8: PR Agent
+
+Generate:
+
+PR Title
+
+PR Description
+
+Format:
+
+## Summary
+
+## Changes
+
+## Testing
+
+## Notes
+
+Follow conventional commit style.
+
+Example:
+
+fix(binding): improve JSON validation error handling
+
+---
+
+# Tool Layer
+
+Create tools:
+
+tools/github.py
+tools/git.py
+tools/search.py
+tools/test_runner.py
+tools/tree_sitter_parser.py
+tools/file_editor.py
+
+Requirements:
+
+* Modular
+* Reusable
+* Well documented
+
+---
+
+# Repository Structure
+
+Generate:
+
+agentic-go-contributor/
+
+├── agents/
+│   ├── issue_agent.py
+│   ├── repository_agent.py
+│   ├── retriever_agent.py
+│   ├── planner_agent.py
+│   ├── code_agent.py
+│   ├── validation_agent.py
+│   ├── repair_agent.py
+│   └── pr_agent.py
+│
+├── services/
+│   ├── embeddings.py
+│   ├── vector_store.py
+│   ├── llm.py
+│
+├── tools/
+│   ├── github.py
+│   ├── git.py
+│   ├── search.py
+│   ├── tree_sitter_parser.py
+│   ├── file_editor.py
+│   └── test_runner.py
+│
+├── graph/
+│   └── workflow.py
+│
+├── outputs/
+│
+├── config/
+│
+├── tests/
+│
+├── main.py
+│
+├── .env.example
+│
+├── requirements.txt
+│
+└── README.md
+
+---
+
+# README Requirements
+
+Include:
+
+1. Installation
+2. OpenRouter setup
+3. Running the agent
+4. Architecture diagram
+5. Example issue
+6. Example output
+
+Example:
+
+python main.py 
+--repo https://github.com/gin-gonic/gin 
+--issue https://github.com/gin-gonic/gin/issues/1234
+
+---
+
+# Quality Requirements
+
+The generated code must:
+
+* Follow SOLID principles
+* Use type hints
+* Use Pydantic where useful
+* Include logging
+* Include error handling
+* Be modular
+* Be testable
+
+Avoid monolithic files.
+
+Prefer small focused components.
+
+---
+
+# Deliverables
+
+Generate:
+
+1. Complete source code
+2. LangGraph workflow
+3. OpenRouter integration
+4. Tree-Sitter integration
+5. FAISS vector retrieval
+6. Ripgrep retrieval
+7. Validation loop
+8. Repair loop
+9. PR generation
+10. README
+
+Output production-ready code for all files.
