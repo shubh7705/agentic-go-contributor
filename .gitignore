@@ -15,8 +15,6 @@ env/
 tmp/
 tmp/repos/
 
-# Outputs (optional — remove this line if you want to commit outputs)
-outputs/
 
 # FAISS index files
 *.faiss/

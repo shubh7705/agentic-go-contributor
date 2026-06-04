@@ -1,0 +1,43 @@
+Exit code: 1
+Status: FAILED
+Errors:
+.\gin.go:26:2: defaultMultipartMemory redeclared in this block
+	.\context.go:30:7: other declaration of defaultMultipartMemory
+.\gin.go:762:26: undefined: MIMEPlain
+.\auth.go:56:43: c.requestHeader undefined (type *Context has no field or method requestHeader)
+.\auth.go:59:6: c.Header undefined (type *Context has no field or method Header)
+.\auth.go:105:48: c.requestHeader undefined (type *Context has no field or method requestHeader)
+.\auth.go:108:6: c.Header undefined (type *Context has no field or method Header)
+.\context.go:131:20: undefined: abortIndex
+.\context.go:135:12: undefined: abortIndex
+.\context.go:146:4: c.JSON undefined (type *Context has no field or method JSON)
+.\context.go:357:38: c.engine.FileUploadDirPermission undefined (type *Engine has no field or method FileUploadDirPermission)
+.\context.go:357:38: too many errors
+Output (last 1000 chars):
+  TestRenderStringLenZero
+--- PASS: TestRenderStringLenZero (0.00s)
+=== RUN   TestRenderHTMLTemplate
+--- PASS: TestRenderHTMLTemplate (0.00s)
+=== RUN   TestRenderHTMLTemplateEmptyName
+--- PASS: TestRenderHTMLTemplateEmptyName (0.00s)
+=== RUN   TestRenderHTMLDebugFiles
+--- PASS: TestRenderHTMLDebugFiles (0.00s)
+=== RUN   TestRenderHTMLDebugGlob
+--- PASS: TestRenderHTMLDebugGlob (0.00s)
+=== RUN   TestRenderHTMLDebugFS
+--- PASS: TestRenderHTMLDebugFS (0.00s)
+=== RUN   TestRenderHTMLDebugPanics
+--- PASS: TestRenderHTMLDebugPanics (0.00s)
+=== RUN   TestRenderHTMLTemplateError
+--- PASS: TestRenderHTMLTemplateError (0.00s)
+=== RUN   TestRenderHTMLTemplateExecuteError
+--- PASS: TestRenderHTMLTemplateExecuteError (0.00s)
+=== RUN   TestRenderReader
+--- PASS: TestRenderReader (0.00s)
+=== RUN   TestRenderReaderNoContentLength
+--- PASS: TestRenderReaderNoContentLength (0.00s)
+=== RUN   TestRenderWriteError
+--- PASS: TestRenderWriteError (0.00s)
+PASS
+ok  	github.com/gin-gonic/gin/render	0.496s
+FAIL
